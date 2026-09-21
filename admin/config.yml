@@ -1,0 +1,68 @@
+# =========================================================
+# إعدادات لوحة التحكم — Decap CMS (حديقة أفكار)
+# الملف يجب أن يبقى في: /admin/config.yml
+# =========================================================
+
+backend:
+  name: git-gateway
+  branch: main            # يجب أن يطابق اسم الفرع الأساسي في مستودع GitHub
+
+# للسماح بالتعديل المحلي أثناء التطوير مع أداة decap-server:
+local_backend: true
+
+# site_url: 'https://your-site.netlify.app'   # ← ضع رابط موقعك هنا (مطلوب لمعاينة الروابط)
+# display_url: 'https://your-site.netlify.app'
+# publish_mode: editorial_workflow            # ← Uncomment لتفعيل مسودات ومراجعة قبل النشر (يتطلب Git Gateway)
+
+logo_url: 'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%22.9em%22%20font-size=%2290%22%3E🌿%3C/text%3E%3C/svg%3E'
+show_preview_links: true
+
+media_folder: 'images/uploads'
+public_folder: '/images/uploads'
+
+collections:
+  - name: 'posts'
+    label: 'المنشورات والمقالات'
+    label_singular: 'مقال'
+    folder: 'posts'
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    path: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    extension: 'md'
+    format: 'yaml-frontmatter'
+    preview_path: 'post/{{slug}}'
+    summary: '{{title}} — {{category}} ({{pageGroup}})'
+    sortable_fields: ['date', 'title', 'category']
+    view_filters:
+      - label: 'شغف'
+        field: pageGroup
+        pattern: 'passion'
+      - label: 'أفكار'
+        field: pageGroup
+        pattern: 'ideas'
+      - label: 'حقائق'
+        field: pageGroup
+        pattern: 'facts'
+      - label: 'مكتبة'
+        field: pageGroup
+        pattern: 'library'
+    fields:
+      - { label: 'عنوان المقال', name: 'title', widget: 'string', hint: 'اجعله واضحاً ومغرياً دون مبالغة' }
+      - { label: 'تاريخ النشر', name: 'date', widget: 'datetime', date_format: 'YYYY-MM-DD', time_format: 'HH:mm', format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }
+      - { label: 'الوصف القصير / الملخص', name: 'summary', widget: 'text', pattern: ['.{20,240}', 'بين 20 و 240 حرفاً'] }
+      - label: 'القسم الرئيسي (الصفحة)'
+        name: 'pageGroup'
+        widget: 'select'
+        options:
+          - { label: '🌱 شغف', value: 'passion' }
+          - { label: '💡 أفكار', value: 'ideas' }
+          - { label: '🔭 حقائق', value: 'facts' }
+          - { label: '📚 مكتبة', value: 'library' }
+      - label: 'التصنيف'
+        name: 'category'
+        widget: 'select'
+        options: ['تاريخ', 'فلسفة', 'جغرافيا', 'علوم', 'طب', 'هندسة', 'تكنولوجيا', 'فنون']
+      - { label: 'وُسوم (Tags)', name: 'tags', widget: 'list', required: false, default: [] }
+      - { label: 'مقال مميَّز ⭐', name: 'featured', widget: 'boolean', default: false, required: false, hint: 'يظهر في أعلى الرئيسية بمساحة كبيرة' }
+      - { label: 'صورة غلاف (اختياري)', name: 'image', widget: 'image', required: false, media_folder: 'images/uploads', public_folder: '/images/uploads', hint: 'إن لم تختر صورة سيظهر غلاف ملوَّن حسب التصنيف' }
+      - { label: 'محتوى المقال', name: 'body', widget: 'markdown', hint: 'استخدم ## للعناوين الفرعية لتوليد فهرس المقال تلقائياً' }

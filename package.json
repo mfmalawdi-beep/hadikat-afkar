@@ -1,0 +1,14 @@
+{
+  "name": "hadikat-afkar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "حديقة أفكار — مدونة مصطفى الصيادي الرقمية: موقع ثابت + Decap CMS",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "npm run build && python3 -m http.server 8080 --bind 0.0.0.0",
+    "cms": "npx --yes decap-server"
+  },
+  "dependencies": {
+    "jsdom": "^24.1.3"
+  }
+}

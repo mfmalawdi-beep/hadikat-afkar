@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة التحكم | حديقة أفكار</title>
+    <meta name="robots" content="noindex" />
+    <style>
+        html, body { margin: 0; height: 100%; background: #fff; }
+        #cms-loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', Tahoma, sans-serif; color: #57534e; font-size: 14px; }
+    </style>
+    <!-- Netlify Identity لتسجيل الدخول عبر خدمة Git Gateway -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+    <div id="cms-loading">جارٍ فتح لوحة التحكم… 🌿</div>
+
+    <!-- Decap CMS -->
+    <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js" onerror="window.__cmsFail=true"></script>
+    <script>
+        // تسجيل الدخول عبر Netlify Identity عند توفره
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', (user) => {
+                if (!user) {
+                    window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
+                }
+            });
+        }
+        // رسالة واضحة إن فشل تحميل CMS (offline مثلاً)
+        setTimeout(() => {
+            const loading = document.getElementById('cms-loading');
+            if (loading && window.__cmsFail) {
+                loading.innerHTML = '⚠️ تعذّر تحميل Decap CMS من الإنترنت. تحتاج لوحة التحكم اتصالاً فعّالاً (وNetlify Identity + Git Gateway) لحفظ التغييرات.';
+            }
+        }, 4000);
+    </script>
+</body>
+</html>

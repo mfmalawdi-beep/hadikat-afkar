@@ -1,0 +1,8 @@
+node_modules/
+.npm/
+/uploads/
+.cache/
+*.log
+.DS_Store
+package-lock.json
+.gitconfig
