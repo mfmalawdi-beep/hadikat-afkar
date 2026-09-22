@@ -27,10 +27,8 @@ collections:
     folder: 'posts'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    path: '{{year}}-{{month}}-{{day}}-{{slug}}'
     extension: 'md'
     format: 'yaml-frontmatter'
-    preview_path: 'post/{{slug}}'
     summary: '{{title}} — {{category}} ({{pageGroup}})'
     sortable_fields: ['date', 'title', 'category']
     view_filters:
