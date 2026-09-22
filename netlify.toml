@@ -25,3 +25,19 @@
   for = "/admin/*"
   [headers.values]
     Cache-Control = "no-cache"
+    [[redirects]]
+  from = "/recovery"
+  to = "/admin/"
+  status = 200
+[[redirects]]
+  from = "/confirm"
+  to = "/admin/"
+  status = 200
+[[redirects]]
+  from = "/invitation"
+  to = "/admin/"
+  status = 200
+[[redirects]]
+  from = "/email/*"
+  to = "/admin/"
+  status = 200
