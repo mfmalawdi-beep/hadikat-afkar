@@ -1,0 +1,10 @@
+import {chromium} from '@playwright/test';
+const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1440,height:1000}});let errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:5173');await page.locator('.hero h1').waitFor();await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:'tests/desktop.png',fullPage:true});
+console.log('Cards',await page.locator('.post-card').count());
+await page.locator('[data-category="تاريخ"]').click();console.log('History filter',await page.locator('.post-card').count());
+await page.locator('[data-category="all"]').click();
+await page.locator('[data-action="search"]').click();await page.locator('#search-input').fill('الخرائط');console.log('Search results',await page.locator('.search-result').count());await page.locator('.search-result').first().click();await page.locator('.article-body').waitFor();console.log('Article tables',await page.locator('.article-body table').count());
+await page.locator('.article-actions [data-save]').click();await page.locator('[data-action="language"]').click();console.log('English article',await page.locator('.article-header h1').innerText());console.log('Direction',await page.locator('html').getAttribute('dir'));await page.locator('[data-action="theme"]').click();await page.screenshot({path:'tests/article-dark.png',fullPage:true});
+await page.goto('http://127.0.0.1:5173/#/saved');await page.locator('.post-card').waitFor();console.log('Saved',await page.locator('.post-card').count());
+await page.locator('[data-action="theme"]').click();await page.locator('[data-action="language"]').click();await page.goto('http://127.0.0.1:5173/#/home');await page.setViewportSize({width:390,height:844});await page.screenshot({path:'tests/mobile.png',fullPage:true});console.log('Mobile overflow',await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
+await page.locator('[data-action="menu"]').click();console.log('Mobile menu',await page.locator('.mobile-nav').isVisible());console.log('Errors',errors);await browser.close();if(errors.length)process.exit(1);

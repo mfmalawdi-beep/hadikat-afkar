@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>لوحة الكتابة | حديقة أفكار</title><link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/fonts.css"><style>body{margin:0;background:#f8f8f2;color:#244d39;font-family:Tajawal,Arial,sans-serif}#admin-status{max-width:740px;padding:32px;margin:40px auto;line-height:1.9}a{color:#244d39}#cms-help{position:fixed;bottom:8px;left:12px;z-index:9999;background:#f8f8f2;border:1px solid #dfe3d7;border-radius:6px;padding:6px 12px;font:12px Tajawal,Arial,sans-serif}#cms-help a{margin:0 8px}</style><script src="/vendor/netlify-identity-widget.js"></script></head><body><div id="admin-status"><h1>لوحة كتابة المقالات</h1><p>جارٍ التحقق من إعداد تسجيل الدخول…</p><p>هذه لوحة للمحررين المدعوين فقط. الدخول لا يصبح متاحاً حتى تفعيل Identity وGit Gateway في إعدادات موقعك على Netlify.</p></div><div id="cms-help"><a href="/">زيارة الموقع</a><a href="/admin/setup.html">دليل التفعيل</a></div><script>
+(async()=>{
+const status=document.getElementById('admin-status');
+try{
+const response=await fetch('/.netlify/identity/settings');
+if(!response.ok||!(response.headers.get('content-type')||'').includes('json'))throw Error('not_configured');
+const settings=await response.json();if(!settings||typeof settings!=='object'||!('external' in settings))throw Error('not_configured');
+const script=document.createElement('script');script.src='/vendor/decap-cms.js';script.onload=()=>status.remove();script.onerror=()=>{status.innerHTML='<h1>تعذّر تحميل المحرر</h1><p>أعد تحميل الصفحة أو راجع دليل التفعيل.</p>'};document.body.appendChild(script);
+}catch(error){status.innerHTML='<h1>اللوحة جاهزة للربط</h1><p>لم يتم العثور على خدمة تسجيل دخول مفعّلة لهذا الموقع. لا يمكن إنشاء حساب مدير محلي من هذه الصفحة.</p><ol><li>انشر المشروع من مستودع GitHub على Netlify.</li><li>فعّل Identity، واختر التسجيل بالدعوات فقط.</li><li>فعّل Git Gateway ثم ادعُ بريدك كمحرر.</li></ol><p><a href="/admin/setup.html">افتح دليل التفعيل خطوة بخطوة ←</a></p><p>تحتاج هذه الميزات موقع Netlify منشوراً؛ نسخة HTML المستقلة لا تستطيع الكتابة في مستودع أو تشغيل الاشتراك البريدي.</p>'}
+})();
+</script></body></html>

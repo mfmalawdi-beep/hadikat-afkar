@@ -1,0 +1,95 @@
+backend:
+  name: git-gateway
+  branch: main
+
+site_url: https://hadikat-afkar.netlify.app
+display_url: https://hadikat-afkar.netlify.app
+locale: ar
+local_backend: false
+publish_mode: simple
+media_folder: public/uploads
+public_folder: /uploads
+logo_url: /assets/favicon.svg
+show_preview_links: true
+editor:
+  preview: false
+slug:
+  encoding: unicode
+  clean_accents: false
+collections:
+  - name: posts
+    label: المقالات
+    label_singular: مقال
+    folder: content/posts
+    create: true
+    delete: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    preview_path: '#/post/{{slug}}'
+    summary: '{{title}} — {{category}}'
+    sortable_fields: [date, title, category]
+    view_filters:
+      - label: المسودات
+        field: draft
+        pattern: true
+      - label: المنشورة
+        field: draft
+        pattern: false
+    fields:
+      - label: العنوان
+        name: title
+        widget: string
+      - label: تاريخ النشر
+        name: date
+        widget: datetime
+        format: YYYY-MM-DDTHH:mm:ss.SSSZ
+      - label: مسودة — لا تظهر للزوار
+        name: draft
+        widget: boolean
+        default: true
+        hint: احفظ المقال كمسودة أثناء الكتابة. لإظهاره للزوار عطّل هذا الخيار واحفظ؛ يبدأ Netlify بناء الموقع الجديد.
+      - label: ملخص المقال
+        name: summary
+        widget: text
+      - label: القسم
+        name: pageGroup
+        widget: select
+        options:
+          - {label: شغف, value: passion}
+          - {label: أفكار, value: ideas}
+          - {label: حقائق, value: facts}
+          - {label: مكتبة, value: library}
+      - label: التصنيف
+        name: category
+        widget: select
+        options: [فلسفة, تاريخ, جغرافيا, فنون]
+      - label: صورة الغلاف
+        name: image
+        widget: image
+        required: false
+        allow_multiple: false
+        choose_url: false
+      - label: الوسوم
+        name: tags
+        widget: list
+        required: false
+        default: []
+      - label: مقال مميز
+        name: featured
+        widget: boolean
+        default: false
+      - label: محتوى المقال بالعربية
+        name: body
+        widget: markdown
+        hint: اكتب مباشرة، وأضف العناوين والصور والروابط والقوائم من شريط الأدوات.
+      - label: الترجمة الإنجليزية الاختيارية
+        name: translation
+        widget: object
+        required: false
+        collapsed: true
+        hint: املأ الحقول الثلاثة لتفعيل الترجمة. عند غيابها يُعرض الأصل العربي مع تنبيه؛ لا تُترجم المقالات الجديدة تلقائياً.
+        fields:
+          - {label: English title, name: title, widget: string, required: false}
+          - {label: English summary, name: summary, widget: text, required: false}
+          - {label: English article, name: body, widget: markdown, required: false}

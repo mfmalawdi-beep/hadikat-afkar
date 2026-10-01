@@ -1,96 +1,56 @@
-# 🌿 حديقة أفكار — Mustafa Al-Sayyadi Digital Blog
+# حديقة أفكار | Garden of Ideas
 
-Complete personal blog with a management panel — no framework or Node.js build:
-Static HTML + CSS + JS, with content in Markdown files and a panel for publishing from the browser.
+Arabic-first bilingual blog, now prepared for Decap CMS on Netlify and Brevo double-opt-in newsletter signup.
 
-## Project Structure
+**Deployment wiring is implemented, not connected to the owner's accounts.** Read [SETUP-AR.md](SETUP-AR.md) for the activation checklist. `/admin/setup.html` provides the same guidance on the deployed site.
 
-```
-├── index.html            Main site page (single-page app)
-├── app.js                Site logic: routing, search, articles, dark mode
-├── styles.css            Styles for article appearance and animations
-├── build.js              Script to generate article index from posts/*.md files
-├── posts/                Articles (Markdown + front matter)
-│   └── posts.json        Generated index — do not edit manually
-├── admin/
-│   ├── index.html        Decap CMS panel
-│   └── config.yml        CMS configuration (field definitions)
-├── images/uploads/       Images uploaded from panel
-├── vendor/               Local copy of libraries (Tailwind, marked, Tajawal font)
-└── netlify.toml          Netlify deployment configuration
+## Run and build
+
+```sh
+npm install
+npm run dev
+npm run build
+npm run test:integration
 ```
 
-## How It Works
+Node.js 22 is recommended. Development binds to 0.0.0.0. `npm run build` first builds the public content index from Markdown, then runs Vite. Deploy using Git-connected Netlify with the included `netlify.toml`. Static drag-and-drop deployment or the old standalone HTML preview cannot provide Git editing or Netlify Functions.
 
-1. You write or edit articles from the panel (`/admin/`) or directly from the `posts/` folder.
-2. Running `node build.js` generates the `posts/posts.json` index (it runs automatically when deploying to Netlify).
-3. The site reads the index then loads the article text when opening, and displays it with marked.js.
+## Writing and publishing
 
-## Running Locally
+- Canonical content: `content/posts/*.md`.
+- Admin UI: `/admin/`, Decap CMS 3.16.3, locally hosted vendor bundle.
+- Auth: Netlify Identity + Git Gateway; configure invite-only registration and invite trusted editors. No default admin password.
+- Saving a draft commits Markdown with `draft: true`; the content builder excludes it from `public/content.json` and the production site. Drafts are still visible to repository readers, so use a private GitHub repository.
+- Publish by setting `draft: false` and saving. Git-connected Netlify rebuilds the site.
+- English translations live in each article's optional `translation` object. All three fields (`title`, `summary`, `body`) are required to use that translation. New content without a translation uses its Arabic original and displays a translation notice in English mode.
+- Cover uploads: `public/uploads`, referenced as `/uploads/...`. Use local images rather than remote URLs.
+- Public generated files: `public/content.json` and `public/english.json`. Do not edit them directly; the next build overwrites them.
+- Changes made manually to Markdown are watched by Vite in development.
 
-```bash
-python3 -m http.server 8080      # or npm run serve to build index and start server
-# Open http://localhost:8080
-```
+## Newsletter
 
-> ⚠️ Do not open the site by double-clicking index.html (file:// protocol):
-> the browser will not be able to load posts/posts.json and article files.
+Frontend posts to `/.netlify/functions/subscribe`. The Netlify function calls Brevo's DOI endpoint; it does not directly add unconfirmed contacts to the list. Brevo holds subscription data. No API keys or list of subscribers are exposed to the browser.
 
-## Editing Content Without the Panel
+Configure `BREVO_API_KEY`, `BREVO_LIST_ID`, `BREVO_DOI_TEMPLATE_ID`, `SITE_URL` privately in Netlify (Functions scope). Use an active DOI template with `{{ params.DOIurl }}` and a verified sender. Redeploy after configuration. Missing credentials return a clear unavailable state, not a fake signup success. Local Vite returns 503 intentionally; real end-to-end checks require a configured Netlify deployment.
 
-Add a file inside `posts/` named `YYYY-MM-DD-slug.md` in this format:
+Protection: explicit consent, fixed server-side list/template/redirect, origin checks, payload/email validation, honeypot, no contact enumeration, 12-second upstream timeout, and Netlify rate limiting (5 requests/minute per IP/domain). Rate limiting is enforced by Netlify, not by direct Node tests. Add CAPTCHA if abuse is observed. No code can guarantee email delivery; test it with the actual account.
 
-```markdown
----
-title: "New article"
-date: 2026-10-01T12:00:00.000Z
-pageGroup: "ideas"     # passion | ideas | facts | library
-category: "علوم"       # تاريخ | فلسفة | جغرافيا | علوم | طب | هندسة | تكنولوجيا | فنون
-featured: false
-tags: ["وسم-1", "وسم-2"]
-summary: "Short description shown on the card"
----
+`public/privacy.html` explains data handling but needs the owner's real contact channel and retention-policy review before launch. Campaign creation, sending, unsubscribe management, and data deletion requests are handled through Brevo. Monthly email campaigns are not automatically scheduled by this project.
 
-Write here using Markdown, and use `##` for subheadings to automatically generate the article table of contents.
-```
+## Content preservation
 
-Then run `node build.js`.
+The original public source is https://hadikat-afkar.netlify.app/. The private admin dashboard was not accessed. All six original Arabic article bodies are retained in the new Markdown files. Original snapshots are in `archive/original-posts` and `archive/posts-source.json`, outside the published directory. Source assertions were preserved, not independently fact-checked. English versions are editorial translations added for this redesign.
 
-## Decap CMS Panel
+The garden image is AI-generated; article photographs are illustrative Unsplash images. Fonts and images are locally hosted. Styling uses the available UI UX Pro Max and Taste Skill guidance: calm editorial design, forest green and warm paper, Tajawal/Amiri typography, logical RTL/LTR layout, reduced motion, focus states and responsive grids.
 
-- **On Netlify (recommended):**
-  1. Upload this folder to a GitHub repository.
-  2. On Netlify: Add new site ← connect the repository. The build command and publish folder are already set in `netlify.toml`.
-  3. From Site settings → Identity: Enable identity service and invite yourself.
-  4. From Site settings → Identity → Services: Enable **Git Gateway**.
-  5. Open `https://your-site.netlify.app/admin/` and log in — any saving or publishing creates a commit in the repository, and the site is automatically redeployed.
-  6. Uncomment the `site_url` and `display_url` lines in `admin/config.yml`.
-- **During development:** Run `npm run cms` (starts a local proxy) then open `/admin/` via the local server — you can edit and save to files without a Git account.
+## Site features
 
-## Customization
+Arabic/English switching, full-text search, category/section filters, sorting, article bookmarks, light/dark theme, reading table of contents/progress, text-size toggle, sharing, and mobile navigation. Personal preferences are stored only in localStorage. Markdown is sanitized with DOMPurify.
 
-- **Author data and social media links:** At the beginning of `app.js` (`SITE` variable). Replace `USERNAME` in social media links and email address.
-- **Sections, categories, and their colors and emojis:** `PAGES` and `CATEGORIES` variables in `app.js` (and don't forget to match `admin/config.yml` if you change a field).
-- **Quotes in the quote-of-the-day widget:** `QUOTES` array.
-- **Monthly email newsletter:** Currently stores emails in localStorage only for testing — connect it to Buttondown/EmailOctopus/Formspree by replacing the submit event in `initEvents` in `app.js`.
-- **Fonts:** Tajawal is stored locally in `vendor/` so the site works without internet. You can remove the folder and it will fall back to a system font.
+## Tests
 
-## Notes
+- `npm run test:integration`: mocked Brevo request/errors, missing configuration, origin/consent/email validation, payload limits, draft exclusion, new-post translations after reordering, and unchanged source article bodies.
+- `node tests/check.mjs`: browser interaction checks, requires running dev server on 5173 and Playwright browser installed.
+- `node tests/accessibility.mjs`: automated homepage accessibility / overflow checks.
 
-- If the site is offline (no internet/CDN), the site will fall back to the locally stored copy of the libraries, and if they are also lost, the site displays a simplified version of the articles from built-in data.
-- Article content comes from your own files, and Markdown is converted using `marked` — if you open the panel to others for publishing, sanitize the input (e.g., add DOMPurify).
-- The panel cannot save without Git Gateway or the local proxy — this is expected for fully static sites.
-
-## فحص سريع
-
-يوجد اختبار دخاني آلي في `test/smoke.js` يحمّل الموقع في بيئة jsdom ويتحقق من الصفحات والبحث والفلاتر وعرض المقالات:
-
-```bash
-npm i -D jsdom        # مرة واحدة فقط
-python3 -m http.server 8080 &   # شغّل الخادم أولاً
-node test/smoke.js    # المتوقع: 36/36
-```
-
-## License
-
-Content and code © 2026 Mustafa Al-Sayyadi — all rights reserved (unless you change it).
+No actual Brevo messages were sent during integration tests, and successful local tests do not verify Identity permissions, Git Gateway, or production email delivery.
